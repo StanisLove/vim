@@ -52,7 +52,7 @@ filetype plugin indent on    " required
 " Base Config {{{
 set background=dark
 let base16colorspace=256  " Access colors present in 256 colorspace
-colorscheme base16-default
+colorscheme base16-default-dark
 syntax on
 let mapleader = ","
 runtime macros/matchit.vim
@@ -84,7 +84,7 @@ set number
 set numberwidth=4
 set ruler
 set scrolloff=3
-set shell=/usr/local/bin/zsh
+set shell=/usr/bin/zsh
 set shiftwidth=2
 set shortmess=atI
 set showcmd
