@@ -20,7 +20,7 @@ Plug 'haya14busa/incsearch.vim'
 " A light and configurable statusline/tabline plugin for Vim
 Plug 'itchyny/lightline.vim'
 
-Plug 'junegunn/fzf.vim'
+Plug 'junegunn/fzf.vim', { 'do': { -> fzf#install() } }
 
 " Search tool
 Plug 'mileszs/ack.vim'

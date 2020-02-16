@@ -113,8 +113,8 @@ endfunction
 " OPTIONS
 " ----------------------------------------------------------------------------
 
-set guioptions -=r
-set guioptions -=L
+" set guioptions -=r
+" set guioptions -=L
 set autoindent              " Carry over indenting from previous line
 set autoread                " Don't bother me hen a file changes
 set autowrite               " Write on :next/:prev/^Z
