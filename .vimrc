@@ -23,6 +23,9 @@ nmap \u :setlocal list!<CR>:setlocal list?<CR>
 " Close quickfix window
 nmap \x :cclose<CR>
 
+" Goto spec (powered by vim-rails)
+nmap gs :A<CR>
+
 " Turn off linewise keys. Normally, the `j' and `k' keys move the cursor down one entire line. with
 " line wrapping on, this can cause the cursor to actually skip a few lines on the screen because
 " it's moving from line N to line N+1 in the file. I want this to act more visually -- I want `down'
@@ -75,6 +78,25 @@ function! KeepCurrentLine(motion)
 endfunction
 nnoremap <C-w>h :silent call KeepCurrentLine('h')<CR>
 nnoremap <C-w>l :silent call KeepCurrentLine('l')<CR>
+
+" Show the current routes in the split
+function! ShowRoutes()
+  " Requires 'scratch' plugin
+  :topleft 100 :split __Routes__
+  " Make sure Vim doesn't write __Routes__ as a file
+  :set buftype=nofile
+  " Delete everything
+  :normal 1GdG
+  " Put routes output in buffer
+  :0r! rake -s routes
+  " Size window to number of lines (1 plus rake output length)
+  " :exec ":normal " . line("$") . "_ "
+  " Move cursor to bottom
+  :normal 1GG
+  " Delete empty trailing line
+  :normal dd
+endfunction
+map gR :call ShowRoutes()<cr>
 
 " ----------------------------------------------------------------------------
 " ABBREVATIONS
@@ -182,9 +204,19 @@ let maplocalleader = ","
 set rtp+=/usr/local/opt/fzf
 set rtp+=~/.fzf
 nmap ; :Buffers<CR>
-nmap <Leader>r :Tags<CR>
+"nmap <Leader>r :Tags<CR>
 nmap <Leader>t :Files<CR>
 nmap <Leader>a :Ag<CR>
+
+" Run rspec command (powered by vim-rspec)
+" TODO: Run vim in container instead
+" let g:rspec_command = "!docker exec -it teachbase_web_1 rspec {spec}"
+" For iterm and iterm 2
+" let g:rspec_runner = "os_x_iterm"
+" let g:rspec_runner = "os_x_iterm2"
+map <Leader>f :call RunCurrentSpecFile()<CR>
+map <Leader>s :call RunNearestSpec()<CR>
+map <Leader>l :call RunLastSpec()<CR>
 
 " Tell ack.vim to use ag (the Silver Searcher) instead
 " Need to installed https://github.com/ggreer/the_silver_searcher
@@ -200,6 +232,9 @@ let g:gitgutter_sign_modified_removed = '∙'
 let g:SuperTabLongestEnhanced=1
 let g:SuperTabLongestHighlight=1
 
+" Set NERDtree window width
+let g:NERDTreeWinSize=40
+
 " Use incsearch.vim to highlight as I search
 map /  <Plug>(incsearch-forward)
 map ?  <Plug>(incsearch-backward)
@@ -213,7 +248,8 @@ let g:vim_markdown_frontmatter = 1
 set completeopt=menu,menuone,preview,noselect,noinsert
 
 nmap <Leader>g :ALEGoToDefinition<CR>
-nmap <Leader>f :ALEFix<CR>
+" It's not working...
+"nmap <Leader>f :ALEFix<CR>
 
 highlight link ALEWarningSign String
 highlight link ALEErrorSign Title

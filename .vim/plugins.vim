@@ -78,4 +78,12 @@ Plug 'dense-analysis/ale'
 
 Plug 'terryma/vim-multiple-cursors'
 
+Plug 'junegunn/vim-easy-align'
+
+Plug 'tpope/vim-rails'
+
+Plug 'thoughtbot/vim-rspec'
+
+Plug 'tpope/vim-dispatch'
+
 call plug#end()
