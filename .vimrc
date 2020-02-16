@@ -210,7 +210,7 @@ nmap <Leader>a :Ag<CR>
 
 " Run rspec command (powered by vim-rspec)
 " TODO: Run vim in container instead
-" let g:rspec_command = "!docker exec -it teachbase_web_1 rspec {spec}"
+" let g:rspec_command = "Dispatch rspec {spec}"
 " For iterm and iterm 2
 " let g:rspec_runner = "os_x_iterm"
 " let g:rspec_runner = "os_x_iterm2"
