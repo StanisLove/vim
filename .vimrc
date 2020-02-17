@@ -154,7 +154,8 @@ set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
                             " Unicode characters for various things
 set matchtime=2             " Tenths of second to hilight matching paren
 " set modelines=5             " How many lines of head & tail to look for ml's
-silent! set mouse=nvc       " Use the mouse, but not in insert mode
+"silent! set mouse=nvc       " Use the mouse, but not in insert mode
+set mouse=
 set nobackup                " No backups left after done editing
 " set nocompatible
 set nonumber                " No line numbers to start
