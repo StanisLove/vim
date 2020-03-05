@@ -86,4 +86,7 @@ Plug 'thoughtbot/vim-rspec'
 
 Plug 'tpope/vim-dispatch'
 
+" Move cursor by indentation
+Plug 'jeetsukumaran/vim-indentwise'
+
 call plug#end()
