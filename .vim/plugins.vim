@@ -82,11 +82,20 @@ Plug 'junegunn/vim-easy-align'
 
 Plug 'tpope/vim-rails'
 
-Plug 'thoughtbot/vim-rspec'
+"Plug 'thoughtbot/vim-rspec'
+Plug 'janko/vim-test'
 
 Plug 'tpope/vim-dispatch'
 
 " Move cursor by indentation
 Plug 'jeetsukumaran/vim-indentwise'
+
+" Plug 'elixir-editors/vim-elixir'
+Plug 'slashmili/alchemist.vim'
+Plug 'Shougo/deoplete.nvim'
+Plug 'roxma/nvim-yarp'
+Plug 'roxma/vim-hug-neovim-rpc'
+
+Plug 'tpope/vim-projectionist'
 
 call plug#end()

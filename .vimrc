@@ -24,7 +24,7 @@ nmap \u :setlocal list!<CR>:setlocal list?<CR>
 nmap \x :cclose<CR>
 
 " Goto spec (powered by vim-rails)
-nmap gs :A<CR>
+" nmap gs :A<CR>
 
 " Turn off linewise keys. Normally, the `j' and `k' keys move the cursor down one entire line. with
 " line wrapping on, this can cause the cursor to actually skip a few lines on the screen because
@@ -113,8 +113,8 @@ endfunction
 " OPTIONS
 " ----------------------------------------------------------------------------
 
-" set guioptions -=r
-" set guioptions -=L
+set guioptions -=r
+set guioptions -=L
 set autoindent              " Carry over indenting from previous line
 set autoread                " Don't bother me hen a file changes
 set autowrite               " Write on :next/:prev/^Z
@@ -154,8 +154,7 @@ set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
                             " Unicode characters for various things
 set matchtime=2             " Tenths of second to hilight matching paren
 " set modelines=5             " How many lines of head & tail to look for ml's
-"silent! set mouse=nvc       " Use the mouse, but not in insert mode
-set mouse=
+silent! set mouse=nvc       " Use the mouse, but not in insert mode
 set nobackup                " No backups left after done editing
 " set nocompatible
 set nonumber                " No line numbers to start
@@ -215,13 +214,27 @@ nmap <Leader>a :Ag<CR>
 " For iterm and iterm 2
 " let g:rspec_runner = "os_x_iterm"
 " let g:rspec_runner = "os_x_iterm2"
-map <Leader>f :call RunCurrentSpecFile()<CR>
-map <Leader>s :call RunNearestSpec()<CR>
-map <Leader>l :call RunLastSpec()<CR>
+
+" vim-rspec mappings
+" map <Leader>f :call RunCurrentSpecFile()<CR>
+" map <Leader>s :call RunNearestSpec()<CR>
+" map <Leader>l :call RunLastSpec()<CR>
+
+" vim-test mappings
+nmap <Leader>s :TestNearest<CR>
+nmap <Leader>f :TestFile<CR>
+nmap <Leader>l :TestLast<CR>
+
+let test#elixir#exunit#executable = 'iex -S mix test'
+
 
 " Tell ack.vim to use ag (the Silver Searcher) instead
 " Need to installed https://github.com/ggreer/the_silver_searcher
 let g:ackprg = 'ag --vimgrep'
+
+let g:ale_elixir_elixir_ls_release = '~/elixir-ls/rel'
+
+let g:deoplete#enable_at_startup = 1
 
 " GitGutter styling to use · instead of +/-
 let g:gitgutter_sign_added = '∙'
@@ -436,9 +449,9 @@ au BufNewFile,BufRead *.md,*.markdown setlocal foldlevel=999 tw=0 nocin
 au BufNewFile,BufRead *.rb      setlocal noai
 au BufNewFile,BufRead *.rxml    setf ruby
 au BufNewFile,BufRead *.sass    setf sass
+au BufNewFile,BufRead *.slime   setf slim
 au BufNewFile,BufRead *.xml     setlocal ft=xml  ts=2 sw=2 et
 au BufNewFile,BufRead *.zsh     setf zsh
-au BufNewFile,BufRead *templates/*.html setf htmldjango
 au BufNewFile,BufRead .git/config setlocal ft=gitconfig nolist ts=4 sw=4 noet
 au BufNewFile,BufRead .gitconfig* setlocal ft=gitconfig nolist ts=4 sw=4 noet
 au BufNewFile,BufRead .vimlocal,.gvimlocal setf vim
