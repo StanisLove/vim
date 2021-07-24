@@ -18,7 +18,7 @@ nmap \g :Gstatus<CR>
 nmap \l :setlocal number!<CR>:setlocal number?<CR>
 " Turn off search highlighting
 nmap \q :nohlsearch<CR>
-" Show/Hide whitespaces
+" Show/Hide whitespaces 
 nmap \u :setlocal list!<CR>:setlocal list?<CR>
 " Close quickfix window
 nmap \x :cclose<CR>
@@ -48,6 +48,10 @@ nmap ga <Plug>(EasyAlign)"
 " http://www.aboutlinux.info/2012/02/vim-folding-commands.html
 nnoremap <space> za
 vnoremap <space> zf
+
+" Correcting bad indent while pasting
+nnoremap p p=`]
+
 "
 " Super fast window movement shortcuts
 nmap <C-j> <C-W>j
@@ -67,6 +71,62 @@ nmap ∑      :BD<CR>
 autocmd FileType qf setlocal number nolist scrolloff=0
 autocmd Filetype qf wincmd J " Makes sure it's at the bottom of the vim window
 
+" To have Alt as <A>
+let c='a'
+while c <= 'z'
+  exec "set <A-".c.">=\e".c
+  exec "imap \e".c." <A-".c.">"
+  let c = nr2char(1+char2nr(c))
+endw
+
+set timeout ttimeoutlen=50
+
+" ----------------------------------------------------------------------------
+" CUSTOM FUNCTIONS
+" ----------------------------------------------------------------------------
+
+" Generates a ruby class definition based on the current file's path
+function! GenerateRubyClassDefinition()
+  " parse file path
+  let l:path = expand("%:.:r")
+  let l:path = substitute(l:path, "lib/", "", "")
+  let l:parts = split(l:path, "/")
+
+  " extract parts
+  let l:class_name = l:parts[-1]
+  let l:module_names = l:parts[0:-2]
+
+  " generate
+  let l:output = ""
+
+  " generate - magic comment
+  let l:output .= "# frozen_string_literal: true" . "\n" . "\n"
+  
+  " generate - module headers
+  if l:module_names[0] == "app"
+    let l:module_names = l:module_names[2:-1]
+  endif
+
+  for m in l:module_names
+    let l:output .= "module " . g:Abolish.mixedcase(m) . "\n"
+  endfor
+
+  " generate - class
+  let l:output .= "class " . g:Abolish.mixedcase(class_name) . "\n"
+  let l:output .= "end" . "\n"
+
+  " generate - module footers
+  for m in l:module_names[1:-1]
+    let l:output .= "end\n"
+  endfor
+  let l:output .= "end"
+
+  exe ":normal i" . l:output
+endfunction
+nmap gc :call GenerateRubyClassDefinition()<CR>
+" nmap gc "=GenerateRubyClassDefinition()<CR>p
+" nmap gc :exe ":normal i" . GenerateRubyClassDefinition()
+
 " Make the cursor stay on the same line when window switching
 function! KeepCurrentLine(motion)
   let theLine = line('.')
@@ -80,23 +140,23 @@ nnoremap <C-w>h :silent call KeepCurrentLine('h')<CR>
 nnoremap <C-w>l :silent call KeepCurrentLine('l')<CR>
 
 " Show the current routes in the split
-function! ShowRoutes()
-  " Requires 'scratch' plugin
-  :topleft 100 :split __Routes__
-  " Make sure Vim doesn't write __Routes__ as a file
-  :set buftype=nofile
-  " Delete everything
-  :normal 1GdG
-  " Put routes output in buffer
-  :0r! rake -s routes
-  " Size window to number of lines (1 plus rake output length)
-  " :exec ":normal " . line("$") . "_ "
-  " Move cursor to bottom
-  :normal 1GG
-  " Delete empty trailing line
-  :normal dd
-endfunction
-map gR :call ShowRoutes()<cr>
+" function! ShowRoutes()
+"   " Requires 'scratch' plugin
+"   :topleft 100 :split __Routes__
+"   " Make sure Vim doesn't write __Routes__ as a file
+"   :set buftype=nofile
+"   " Delete everything
+"   :normal 1GdG
+"   " Put routes output in buffer
+"   :0r! rake -s routes
+"   " Size window to number of lines (1 plus rake output length)
+"   " :exec ":normal " . line("$") . "_ "
+"   " Move cursor to bottom
+"   :normal 1GG
+"   " Delete empty trailing line
+"   :normal dd
+" endfunction
+" map gR :call ShowRoutes()<cr>
 
 " ----------------------------------------------------------------------------
 " ABBREVATIONS
@@ -113,6 +173,7 @@ endfunction
 " OPTIONS
 " ----------------------------------------------------------------------------
 
+set nostartofline " Stay at the same place switching between buffers
 set guioptions -=r
 set guioptions -=L
 set autoindent              " Carry over indenting from previous line
@@ -144,12 +205,12 @@ set formatoptions=tcqn1     " t - autowrap normal text
 set hidden                  " Don't prompt to save hidden windows until exit
 set history=200             " How many lines of history to save
 set hlsearch                " Hilight searching
-set ignorecase              " Case insensitive
+" set ignorecase              " Case insensitive
 set incsearch               " Search as you type
 set infercase               " Completion recognizes capitalization
 set laststatus=2            " Always show the status bar
 set linebreak               " Break long lines by word, not char
-set list                    " Show whitespace as special chars - see listchars
+" set list                    " Show whitespace as special chars - see listchars
 set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
                             " Unicode characters for various things
 set matchtime=2             " Tenths of second to hilight matching paren
@@ -204,13 +265,21 @@ let maplocalleader = ","
 set rtp+=/usr/local/opt/fzf
 set rtp+=~/.fzf
 nmap ; :Buffers<CR>
-"nmap <Leader>r :Tags<CR>
+nmap <Leader>r :Tags<CR>
 nmap <Leader>t :Files<CR>
 nmap <Leader>a :Ag<CR>
 
+" let g:AutoPairsShortcutFastWrap = '<C-q>'
+
+" let g:XkbSwitchEnabled = 1
+" let g:XkbSwitchLib = '/usr/local/lib/libg3kbswitch.so'
+" let g:XkbSwitchIMappings = ['ru']
+
+let g:fzf_tags_command = 'ctags -R --exclude=node_modules'
+
 " Run rspec command (powered by vim-rspec)
 " TODO: Run vim in container instead
-" let g:rspec_command = "Dispatch rspec {spec}"
+let g:rspec_command = "Dispatch rspec {spec}"
 " For iterm and iterm 2
 " let g:rspec_runner = "os_x_iterm"
 " let g:rspec_runner = "os_x_iterm2"
@@ -226,6 +295,8 @@ nmap <Leader>f :TestFile<CR>
 nmap <Leader>l :TestLast<CR>
 
 let test#elixir#exunit#executable = 'iex -S mix test'
+let test#javascript#jest#executable = 'node node_modules/.bin/jest --runInBand'
+" let test#javascript#jest#executable = 'node --inspect-brk node_modules/.bin/jest --runInBand'
 
 
 " Tell ack.vim to use ag (the Silver Searcher) instead
@@ -233,8 +304,6 @@ let test#elixir#exunit#executable = 'iex -S mix test'
 let g:ackprg = 'ag --vimgrep'
 
 let g:ale_elixir_elixir_ls_release = '~/elixir-ls/rel'
-
-let g:deoplete#enable_at_startup = 1
 
 " GitGutter styling to use · instead of +/-
 let g:gitgutter_sign_added = '∙'
@@ -262,12 +331,13 @@ let g:vim_markdown_frontmatter = 1
 set completeopt=menu,menuone,preview,noselect,noinsert
 
 nmap <Leader>g :ALEGoToDefinition<CR>
-" It's not working...
-"nmap <Leader>f :ALEFix<CR>
+nmap fix :ALEFix<CR>
 
 highlight link ALEWarningSign String
 highlight link ALEErrorSign Title
 
+let g:ale_ruby_solargraph_executable = 'solargraph'
+let g:ale_ruby_solargraph_options = {}
 let g:ale_completion_enabled = 0
 let g:ale_sign_warning = '▲'
 let g:ale_sign_error = '✗'
@@ -275,14 +345,14 @@ let g:ale_linters = {}
 let g:ale_linters.scss = ['stylelint']
 let g:ale_linters.css = ['stylelint']
 let g:ale_linters.elixir = ['elixir-ls', 'credo']
-let g:ale_linters.ruby = ['rubocop', 'ruby', 'solargraph']
+let g:ale_linters.ruby = ['rubocop', 'ruby', 'solargraph'] " ['standardrb'] 
 let g:ale_linters.javascript = ['eslint', 'flow', 'flow-language-server', 'jscs', 'jshint', 'standard']
 let g:ale_fixers = {'*': ['remove_trailing_lines', 'trim_whitespace']}
 let g:ale_fixers.javascript = ['eslint', 'prettier']
 let g:ale_fixers.html = ['prettier']
 let g:ale_fixers.scss = ['stylelint']
 let g:ale_fixers.css = ['stylelint']
-let g:ale_fixers.ruby = ['rubocop']
+let g:ale_fixers.ruby = ['rubocop'] " ['standard']
 let g:ale_fixers.elixir = ['mix_format']
 let g:ale_fixers.xml = ['xmllint']
 let g:ale_ruby_rubocop_executable = 'bundle'
@@ -342,13 +412,46 @@ function! s:MaybeUpdateLightline()
 endfunction
 
 " ----------------------------------------------------------------------------
+" SPELL CHECK
+" ----------------------------------------------------------------------------
+"   По умолчанию проверка орфографии выключена.
+syntax spell toplevel
+setlocal spell spelllang=
+setlocal nospell
+function ChangeSpellLang()
+  if &spelllang =~ "en_us"
+    setlocal spell spelllang=ru
+    echo "spelllang: ru"
+  elseif &spelllang =~ "ru"
+    setlocal spell spelllang=
+    setlocal nospell
+    echo "spelllang: off"
+  else
+    setlocal spell spelllang=en_us
+    echo "spelllang: en"
+  endif
+endfunc
+
+" map spell on/off for English/Russian
+map <F10> <Esc>:call ChangeSpellLang()<CR>
+
+" ----------------------------------------------------------------------------
 " COLORS
 " ----------------------------------------------------------------------------
 
 " Make sure colored syntax mode is on, and make it Just Work with 256-color terminals.
-set background=dark
+" set background=dark
 let g:rehash256 = 1 " Something to do with Molokai?
-colorscheme molokai
+
+colorscheme onehalflight
+let g:lightline.colorscheme='onehalfdark'
+
+if exists('+termguicolors')
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  set termguicolors
+endif
+
 if !has('gui_running')
   if $TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gnome-terminal"
     set t_Co=256
@@ -366,6 +469,8 @@ if !has('gui_running')
   " Disable Background Color Erase when within tmux - https://stackoverflow.com/q/6427650/102704
   if $TMUX != ""
     set t_ut=
+    set -g default-terminal "tmux-256color"
+    set -ga terminal-overrides ",*256col*:Tc"
   endif
 endif
 syntax on
@@ -376,6 +481,10 @@ highlight StatusLineTerm   cterm=NONE ctermbg=blue ctermfg=white
 highlight StatusLineNC     cterm=NONE ctermbg=black ctermfg=white
 highlight StatusLineTermNC cterm=NONE ctermbg=black ctermfg=white
 highlight VertSplit        cterm=NONE ctermbg=black ctermfg=white
+
+hi GitGutterChange guifg=#ffff00 ctermbg=bg ctermfg=3
+hi GitGutterDelete guifg=#ff0000 ctermbg=bg ctermfg=1
+hi GitGutterAdd guifg=#ffffff ctermbg=bg ctermfg=2
 
 " taglist.vim's filenames is linked to LineNr by default, which is too dark
 highlight def link MyTagListFileName Statement
@@ -401,11 +510,11 @@ highlight! def link LineNr Ignore
 
 " Custom search colors
 highlight clear Search
-highlight Search term=NONE cterm=NONE ctermfg=white ctermbg=black
+highlight Search term=NONE cterm=NONE ctermfg=brown ctermbg=white
 
 " Make hilighted matching parents less annoying
-highlight clear MatchParen
-highlight link MatchParen Search
+" highlight clear MatchParen
+" highlight link MatchParen Search
 
 " Custom colors for NERDTree
 highlight def link NERDTreeRO NERDTreeFile
@@ -421,14 +530,14 @@ highlight clear SignColumn
 highlight link SignColumn Ignore
 
 " Markdown could be more fruit salady
-highlight link markdownH1 PreProc
-highlight link markdownH2 PreProc
-highlight link markdownLink Character
-highlight link markdownBold String
-highlight link markdownItalic Statement
-highlight link markdownCode Delimiter
-highlight link markdownCodeBlock Delimiter
-highlight link markdownListMarker Todo
+"highlight link markdownH1 PreProc
+"highlight link markdownH2 PreProc
+"highlight link markdownLink Character
+"highlight link markdownBold String
+"highlight link markdownItalic Statement
+"highlight link markdownCode Delimiter
+"highlight link markdownCodeBlock Delimiter
+"highlight link markdownListMarker Todo
 
 " ----------------------------------------------------------------------------
 " FILE TYPE TRIGGERS
@@ -444,7 +553,7 @@ au BufNewFile,BufRead *.gyp     set ft=python
 au BufNewFile,BufRead *.html    setlocal nocindent smartindent
 au BufNewFile,BufRead *.json    set ft=json tw=0
 au BufNewFile,BufRead *.less    setlocal ft=less nocindent smartindent
-au BufNewFile,BufRead *.md      setlocal ft=markdown nolist spell
+au BufNewFile,BufRead *.md      setlocal ft=markdown nospell "nolist spell
 au BufNewFile,BufRead *.md,*.markdown setlocal foldlevel=999 tw=0 nocin
 au BufNewFile,BufRead *.rb      setlocal noai
 au BufNewFile,BufRead *.rxml    setf ruby
@@ -459,7 +568,9 @@ au BufNewFile,BufRead .zshlocal setf zsh
 au BufNewFile,BufRead /tmp/crontab* setf crontab
 au BufNewFile,BufRead COMMIT_EDITMSG setlocal nolist nonumber
 au BufNewFile,BufRead Makefile setlocal nolist
+au BufNewFile,BufRead *.json.jbuilder set ft=ruby
 
+au FileType yaml setlocal ts=2 sts=2 sw=2 expandtab 
 au FileType gitcommit setlocal nolist ts=4 sts=4 sw=4 noet
 au FileType json setlocal conceallevel=0 foldmethod=syntax foldlevel=999
 au FileType make setlocal nolist ts=4 sts=4 sw=4 noet

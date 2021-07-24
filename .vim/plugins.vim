@@ -10,6 +10,7 @@ Plug 'docunext/closetag.vim'
 
 " <tab> autocomplete
 Plug 'ervandew/supertab'
+" Plug 'Shougo/deoplete.nvim'
 
 " incsearch.vim provides simple improved incremental searching.
 " You can use it comfortably like the default search(/, ?).
@@ -31,6 +32,7 @@ Plug 'mileszs/ack.vim'
 Plug 'qpkorr/vim-bufkill'
 
 Plug 'preservim/nerdtree'
+Plug 'PhilRunninger/nerdtree-visual-selection'
 
 " A solid language pack for Vim.
 Plug 'sheerun/vim-polyglot'
@@ -49,6 +51,7 @@ Plug 'tpope/vim-endwise'
 
 " Git commands wrapper
 Plug 'tpope/vim-fugitive'
+Plug 'shumphrey/fugitive-gitlab.vim'
 
 " Manage runtime path
 " Plug 'tpope/vim-pathogen'
@@ -75,16 +78,13 @@ Plug 'tpope/vim-unimpaired'
 
 " ALE and LSP client
 Plug 'dense-analysis/ale'
-
 Plug 'terryma/vim-multiple-cursors'
-
 Plug 'junegunn/vim-easy-align'
-
 Plug 'tpope/vim-rails'
+" Plug 'christoomey/vim-rfactory'
 
 "Plug 'thoughtbot/vim-rspec'
 Plug 'janko/vim-test'
-
 Plug 'tpope/vim-dispatch'
 
 " Move cursor by indentation
@@ -92,10 +92,26 @@ Plug 'jeetsukumaran/vim-indentwise'
 
 " Plug 'elixir-editors/vim-elixir'
 Plug 'slashmili/alchemist.vim'
-Plug 'Shougo/deoplete.nvim'
-Plug 'roxma/nvim-yarp'
-Plug 'roxma/vim-hug-neovim-rpc'
+" Plug 'roxma/nvim-yarp'
+" Plug 'roxma/vim-hug-neovim-rpc'
 
 Plug 'tpope/vim-projectionist'
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
+" Return to en lang after return from insert mode
+Plug 'lyokha/vim-xkbswitch'
+Plug 'jiangmiao/auto-pairs'
+" https://github.com/jgdavey/vim-blockle/issues/5
+Plug 'jgdavey/vim-blockle'
+
+Plug 'vim-ruby/vim-ruby'
+Plug 'tpope/vim-rbenv'
+Plug 'tpope/vim-bundler'
+Plug 'StanisLove/vim-spectator'
+Plug 'pocke/rbs.vim'
+Plug 'sonph/onehalf', {'rtp': 'vim'}
+Plug 'stephpy/vim-yaml'
+
+" easily search for, substitute, and abbreviate multiple variants of a word
+Plug 'tpope/vim-abolish'
 
 call plug#end()
